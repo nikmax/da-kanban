@@ -1,0 +1,18 @@
+.board-column {
+    background-color: #e6e6e6;
+    min-height: 90vh;
+}
+
+.item-column {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+h3 {
+    text-align: center;
+}
+
+.task-item {
+    margin-bottom: 16px;
+}
