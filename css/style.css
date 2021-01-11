@@ -16,3 +16,12 @@ h3 {
 .task-item {
     margin-bottom: 16px;
 }
+
+.backlogtable {
+    width: 100%;
+}
+
+.addtaskform {
+    display: flex;
+    flex-direction: column;
+}

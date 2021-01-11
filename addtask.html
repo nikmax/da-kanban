@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-blue.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Join</title>
+</head>
+
+<body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
+        <header class="mdl-layout__drawer sidebar">
+            <span class="mdl-layout-title">Join</span>
+            <nav class="mdl-navigation">
+                <a class="mdl-navigation__link" href="board.html">Board</a>
+                <a class="mdl-navigation__link" href="backlog.html">Backlog</a>
+                <a class="mdl-navigation__link" href="addtask.html">Add Task</a>
+                <a class="mdl-navigation__link" href="">Help</a>
+            </nav>
+        </header>
+        <main class="mdl-layout__content">
+            <h1>Add Task</h1>
+            <form action="" class="addtaskform">
+                <div class="mdl-textfield mdl-js-textfield">
+                    <input class="mdl-textfield__input" type="text" id="title">
+                    <label class="mdl-textfield__label" for="title">Title</label>
+                </div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <select class="mdl-textfield__input" id="category" name="category">
+                        <option></option>
+                        <option value="category1">Category 1</option>
+                        <option value="category2">Category 2</option>
+                        <option value="category3">Category 3</option>
+                    </select>
+                    <label class="mdl-textfield__label" for="category">Category</label>
+                </div>
+                <div class="mdl-textfield mdl-js-textfield">
+                    <textarea class="mdl-textfield__input" type="text" rows="3" id="description"></textarea>
+                    <label class="mdl-textfield__label" for="description">Description</label>
+                </div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <select class="mdl-textfield__input" id="urgency" name="urgency">
+                        <option></option>
+                        <option value="low">Low</option>
+                        <option value="meidum">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                    <label class="mdl-textfield__label" for="category">Category</label>
+                </div>
+                <div class="addtaskbuttons">
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+                        Cancel
+                    </button>
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                        Create Task
+                    </button>
+                </div>
+            </form>
+        </main>
+        <footer class="mdl-mini-footer">
+            <div class="mdl-mini-footer__right-section">
+                <ul class="mdl-mini-footer__link-list">
+                    <li><a href="#">Imprint</a></li>
+                    <li><a href="#">Privacy</a></li>
+                </ul>
+            </div>
+        </footer>
+    </div>
+
+</body>
+
+</html>
