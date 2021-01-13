@@ -92,11 +92,12 @@
                 </nav>
             </header>
             <main class="mdl-layout__content">
-                <h1>Add Task</h1>
-                <form action="" class="addtaskform">
-                    <div class="mdl-textfield mdl-js-textfield">
+                <div class="mdl-grid">
+                <h1 class="mdl-cell mdl-cell--12-col">Add Task</h1>
+                <form action="" class="addtaskform mdl-cell mdl-cell--12-col">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input class="mdl-textfield__input" type="text" id="title">
-                        <label class="mdl-textfield__label" for="title">Title</label>
+                        <label class="mdl-textfield__label" for="title">Title...</label>
                     </div>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <select class="mdl-textfield__input" id="category" name="category">
@@ -130,6 +131,7 @@
                         </button>
                     </div>
                 </form>
+            </div>
             </main>
             <footer class="mdl-mini-footer">
                 <div class="mdl-mini-footer__right-section">
