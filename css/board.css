@@ -1,3 +1,6 @@
+.hide{
+    display: none; 
+}
 .board-column {
     background-color: #e6e6e6;
     min-height: 90vh;
@@ -7,6 +10,14 @@
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
+    min-height: 10vh;
+}
+
+.item-column {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    min-height: 10vh;
 }
 
 h3 {
@@ -15,10 +26,6 @@ h3 {
 
 .task-item {
     margin-bottom: 16px;
-}
-
-.backlogtable {
-    width: 100%;
 }
 
 .addtaskform {
