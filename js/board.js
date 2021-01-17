@@ -4,8 +4,7 @@ const draggableElements = document.querySelectorAll('.task-item');
 draggableElements.forEach(elem => {
     elem.setAttribute('draggable', true);
     elem.addEventListener('dragstart', dragStart);
-    //elem.addEventListener('drop', drop);
-    elem.addEventListener('dragover', dragOver);
+    elem.addEventListener('dragend', dragEnd);
 });
 
 // Handle droppable items
@@ -13,38 +12,58 @@ draggableElements.forEach(elem => {
 const droppableElements = document.querySelectorAll('.item-column');
 droppableElements.forEach(elem => {
     elem.addEventListener('dragover', dragOver);
+    elem.addEventListener('dragenter', dragEnter);
+    elem.addEventListener('dragleave', dragLeave);
     elem.addEventListener('drop', drop);
 });
 
 // Drag & Drop function
 
+// Dragged Item
+
 function dragStart(event) {
-    console.log('dragging...');
-    event.dataTransfer.setData("text", event.target.id);
+    dragged = event.target;
+    event.target.style.opacity = .5;
+}
+
+function dragEnd(event) {
+    event.target.style.opacity = '';
+}
+
+// Drop Target
+
+function dragEnter(event) {
+    let placeholder = dragged;
+    if (event.target.className == 'item-column') {
+        event.target.prepend(placeholder);
+    }
+}
+
+function dragLeave(event) {
 }
 
 function dragOver(event) {
     event.preventDefault();
-    console.log(event.dataTransfer.getData("text") + ' over ' + event.target.className);
 }
 
 function drop(event) {
     event.preventDefault();
-    var data = event.dataTransfer.getData("text");
     let node = event.target;
     while (node.className != 'item-column') {
         node = node.parentNode;
     }
-    node.prepend(document.getElementById(data));
+    dragged.parentNode.removeChild(dragged);
+    node.prepend(dragged);
+    node.style.background = '';
 }
 
 /* More drag events
 
-elem.addEventListener('dragstart', event);
-elem.addEventListener('dragenter', event);
-elem.addEventListener('dragover', event);
-elem.addEventListener('dragleave', event);
-elem.addEventListener('dragend', event);
-elem.addEventListener('drop', event);
+elem.addEventListener('dragstart', function);
+elem.addEventListener('dragenter', function);
+elem.addEventListener('dragover', function);
+elem.addEventListener('dragleave', function);
+elem.addEventListener('dragend', function);
+elem.addEventListener('drop', function);
 
 */
