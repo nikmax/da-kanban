@@ -55,7 +55,21 @@ function drop(event) {
     dragged.parentNode.removeChild(dragged);
     node.prepend(dragged);
     node.style.background = '';
+    notification.MaterialSnackbar.showSnackbar(
+        {
+          message: 'Task moved'
+        }
+      );
 }
+
+// Success message
+
+var notification = document.querySelector('.mdl-js-snackbar');
+notification.MaterialSnackbar.showSnackbar(
+  {
+    message: 'Task moved'
+  }
+);
 
 /* More drag events
 
