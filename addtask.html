@@ -4,7 +4,7 @@
 <head>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-blue.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <!--link rel="stylesheet" href="css/style.css"-->
 
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/generalCSS.css">
@@ -94,38 +94,44 @@
             <main class="mdl-layout__content">
                 <div class="mdl-grid">
                 <h1 class="mdl-cell mdl-cell--12-col">Add Task</h1>
-                <form action="" class="addtaskform mdl-cell mdl-cell--12-col">
+                <div id="info" style="display: none;" class="alert alert-primary" role="alert">saved!</div>
+                <form action="" class="addtaskform mdl-cell mdl-cell--12-col" id="addtaskform">
+                    <!--start input fields-->
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input class="mdl-textfield__input" type="text" id="title">
-                        <label class="mdl-textfield__label" for="title">Title...</label>
+                        <input class="mdl-textfield__input" type="text" id="title" name="title">
+                        <label class="mdl-textfield__label" for="title">Title</label>
                     </div>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <select class="mdl-textfield__input" id="category" name="category">
-                            <option></option>
-                            <option value="category1">Category 1</option>
-                            <option value="category2">Category 2</option>
-                            <option value="category3">Category 3</option>
-                        </select>
-                        <label class="mdl-textfield__label" for="category">Category</label>
-                    </div>
-                    <div class="mdl-textfield mdl-js-textfield">
-                        <textarea class="mdl-textfield__input" type="text" rows="3" id="description"></textarea>
-                        <label class="mdl-textfield__label" for="description">Description</label>
+                        <input class="mdl-textfield__input" type="date" id="duedate" name="duedate">
+                        <label class="mdl-textfield__label" for="duedate">Due Date</label>
                     </div>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <select class="mdl-textfield__input" id="urgency" name="urgency">
                             <option></option>
-                            <option value="low">Low</option>
-                            <option value="meidum">Medium</option>
-                            <option value="high">High</option>
+                            <option value="Low">Low</option>
+                            <option value="Middle">Middle</option>
+                            <option value="High">High</option>
                         </select>
+                        <label class="mdl-textfield__label" for="urgency">Urgency</label>
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input class="mdl-textfield__input" type="text" id="category" name="category" list="categories">
+                        <datalist id="categories"></datalist>
                         <label class="mdl-textfield__label" for="category">Category</label>
                     </div>
+
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <textarea class="mdl-textfield__input" type="text" rows="3" id="description" name="description"></textarea>
+                        <label class="mdl-textfield__label" for="description">Description</label>
+                    </div>
+
+
+                    <!-- end input fields -->
                     <div class="addtaskbuttons">
                         <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
                             Cancel
                         </button>
-                        <button
+                        <button  id="create" 
                             class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
                             Create Task
                         </button>
@@ -172,18 +178,60 @@
 
         const auth = firebase.auth();
         const db = firebase.firestore();
+         db.collection("tasks")
+          .onSnapshot(function(querySnapshot) {
+              let categories = document.querySelector('#categories');
+              categories.innerHTML = '';
+              querySnapshot.forEach(function(doc) {
+                  
+                  if(doc.data().category != undefined)
+                  categories.innerHTML += `<option value="${doc.data().category}">`;
+              });
+              
+          });
 
         //wird vermutlich ab Version 6 nicht mehr benötigt, könnte aber einen kleinen error in der Konsole sonst auslösen
         db.settings({ timestampsInSnapshots: true });
-        console.log('keine Ahnung');
+        // #   START  # hier kommt mein js-code *** Anton ***
+        document.querySelector('#create').addEventListener('click', createTask);
+
+        function createTask (){
+            let el = document.querySelector('form').elements;
+            // Add a new document with a generated id and return the document or false
+            db.collection("tasks").add({
+                'title' : el.namedItem('title').value,
+                'duedate' : el.namedItem('duedate').value,
+                'date' : firebase.firestore.Timestamp.now().toDate(),
+                'category' : el.namedItem('category').value,
+                'urgency' : el.namedItem('urgency').value,
+                'user' : firebase.auth().currentUser.displayName,
+                'description' : el.namedItem('description').value,
+                'position' : 'backlog'
+            })
+            .then(function(docRef) {
+                document.querySelector('#info').innerHTML = "Document written succefully with ID: "+ docRef.id;
+                document.querySelector('#info').style.display = 'block';
+                el.namedItem('title').value = "";
+                el.namedItem('description').value = "";
+                return docRef;
+            })
+            .catch(function(error) {
+                document.querySelector('#info').innerHTML = "Error adding document: " + error;
+                document.querySelector('#info').style.display = 'block';
+                return false;
+            });
+        }
+
+
+        // #   STOP  # hier kommt mein js-code *** Anton ***
     </script>
     <!--script src="js/firebaseRelatedLogin.js"></script-->
 
 
-    <script src="js/sb-admin-2.js"></script>
+    <!--script src="js/sb-admin-2.js"></script-->
 
 
-    <script src="js/newLogin.js"></script>
+    <!--script src="js/newLogin.js"></script-->
 </body>
 
 </html>
