@@ -1,3 +1,5 @@
+/* Drag & Drop Section */
+
 // Handle draggable items
 
 const draggableElements = document.querySelectorAll('.task-item');
@@ -57,19 +59,14 @@ function drop(event) {
     node.style.background = '';
     notification.MaterialSnackbar.showSnackbar(
         {
-          message: 'Task moved'
+            message: 'Task moved'
         }
-      );
+    );
 }
 
 // Success message
 
 var notification = document.querySelector('.mdl-js-snackbar');
-notification.MaterialSnackbar.showSnackbar(
-  {
-    message: 'Task moved'
-  }
-);
 
 /* More drag events
 
@@ -81,3 +78,71 @@ elem.addEventListener('dragend', function);
 elem.addEventListener('drop', function);
 
 */
+
+
+
+/* DB read/write section */
+
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+var firebaseConfig = {
+    apiKey: "AIzaSyDX_Lsm5VlyC6Nht9Orcv66EWTT1fiigxQ",
+    authDomain: "kanban-management.firebaseapp.com",
+    projectId: "kanban-management",
+    storageBucket: "kanban-management.appspot.com",
+    messagingSenderId: "345279118292",
+    appId: "1:345279118292:web:0610691d4e6551ea4ff441",
+    measurementId: "G-LVWL45W2PG"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+firebase.analytics();
+var db = firebase.firestore();
+
+class Task {
+    constructor(title, duedate, date, category, urgency, user, description, position) {
+        this.title = title;
+        this.duedate = duedate;
+        this.date = date;
+        this.category = category;
+        this.urgency = urgency;
+        this.user = user;
+        this.description = description;
+        this.position = position;
+    }
+    toString() {
+        return this.title + ', ' + this.duedate + ', ' + this.date + ', ' + this.category + ', ' + this.urgency + ', ' + this.user + ', ' + this.description + ', ' + this.position;
+    }
+}
+
+// Firestore data converter
+var taskConverter = {
+    toFirestore: function (task) {
+        return {
+            title: task.title,
+            duedate: task.duedate,
+            date: task.date,
+            category: task.category,
+            urgency: task.urgency,
+            user: task.user,
+            description: task.description,
+            position: task.position
+        };
+    },
+    fromFirestore: function (snapshot, options) {
+        const data = snapshot.data(options);
+        return new Task(data.title, data.duedate, data.date, data.category, data.urgency, data.user, data.description, data.position);
+    }
+};
+
+db.collection('tasks').where('position', '!=', 'backlog')
+    .withConverter(taskConverter)
+    .onSnapshot(function (querySnapshot) {
+        var tasks = [];
+        querySnapshot.forEach(function (doc) {
+            tasks.push(doc.data());
+        });
+        console.log(tasks);
+    });
