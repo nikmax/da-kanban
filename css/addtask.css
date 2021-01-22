@@ -1,0 +1,31 @@
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 99;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      margin: 10% auto;
+      border-radius:5px
+    }
+
+    .mdl-card__actions { background-color: rgba(222, 222, 222, 0.25); }
+
+    .mdl-snackbar {
+      background-color: rgba(46, 204, 113, .95);
+    }
+
+    .mdl-snackbar__icon {
+      color: #ffffff;
+      padding: 13px 0 0 24px;
+    }
+
+    .mdl-snackbar__action {
+      color: #ffffff;
+    }
