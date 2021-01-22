@@ -1,7 +1,6 @@
 window.addEventListener('load',addTaskInit);
-
 function addTaskInit(){
-	const auth = firebase.auth();
+	snackbarColor = notification.style.backgroundColor;
 	document.querySelector('[href="addtask.html"]')
 		.addEventListener('click',function(e){
 			showForm(e,'');
@@ -24,65 +23,72 @@ function addTaskInit(){
 	        document.querySelector('#addtask').style.display = "none";
 	    }
 	}
-
 	db.collection("tasks")
 	  .onSnapshot(function(querySnapshot) {
 		  let categories = document.querySelector('#categories');
+		  const catArray = [];
 		  categories.innerHTML = '';
 		  querySnapshot.forEach(function(doc) {
-			  
-			if(doc.data().category != undefined)
-				categories.innerHTML += `<option value="${doc.data().category}">`;
-				//console.log(`<option value="${doc.data().category}">`);
+			const catItem = doc.data().category;
+			if(catItem != undefined && catItem.trim() != '')
+
+				if(catArray[catItem.trim()] == null ){
+					catArray[catItem.trim()] = 1;
+				}else{
+					catArray[catItem.trim()]++;
+				}
 		  });
+		  for(let i in catArray){
+		  	categories.innerHTML += `<option value="${i}">`;
+					//console.log(`<option value="${i} (${catArray[i]})">`);
+		  }
 		  
 	  });
+	const auth = firebase.auth();
 	firebase.auth().onAuthStateChanged(function(u) {
 		if (u) {
-		  // User is signed in.
+		  //showAlert('User is signed in.');
 		  //-...const user = firebase.auth().currentUser;
 		} else {
-		  // User is signed out.
+		  //showAlert('User is signed out.');
 		  // ...
 		}
 	  });
-
-
 }
-
 function showForm(e,id){
 	e.preventDefault();
-	document.querySelector('form').elements.namedItem('id').value = id;
+	let el = document.querySelector('form').elements;
+	el.namedItem('id').value = id;
 	if(id == ''){
-		document.querySelector('#title').value = '';
+		el.namedItem('title').value = '';
 		document.querySelector('#create').innerHTML = 'CREATE NEW TASK';
 		document.querySelector('.sidebar').classList.remove('is-visible');
 		document.querySelector('.mdl-layout__obfuscator').classList.remove('is-visible');
 
 		document.querySelector('#addtask').style.display ='block';
-		document.querySelector('#title').focus();
+		el.namedItem('title').focus();
 	}else{
 		db.collection("tasks").doc(id)
 		.get().then(function(doc) {
 			if (doc.exists){
-				let el = document.querySelector('form').elements;
+				
 				el.namedItem('id').value = id;
 				el.namedItem('urgency').value = doc.data().urgency;
 				el.namedItem('category').value = doc.data().category;
 				el.namedItem('duedate').value = doc.data().duedate;
 				el.namedItem('description').value = doc.data().description;
       			el.namedItem('title').value = doc.data().title;
+      			//el.namedItem('title').parentNode.classList.add('is-upgraded');
       			document.querySelector('#create').innerHTML = 'UPDATE MODIEFIED TASK';
       			document.querySelector('#addtask').style.display ='block';
 				el.namedItem('title').focus();
     		} else {
-      			showAlert("No such document with id: " + id);
+      			showDanger("No such document with id: " + id);
     	}}).catch(function(error) {
-      		showAlert("Error getting document:" + error);
+      		showDanger("Error getting document:" + error);
    		});
 	}
 }
-
 function createTask (){
 	let el = document.querySelector('form').elements;
 	if(firebase.auth().currentUser != null){
@@ -115,7 +121,7 @@ function createTask (){
 			return docRef;
 		})
 		.catch(function(error) {
-		    showAlert("Error adding document: " + error);
+		    showDanger("Error adding document: " + error);
 		    return false;
 		});
 	}else{
@@ -137,24 +143,29 @@ function createTask (){
 			return true;
 		})
 		.catch(function(error) {
-		    showAlert("Error adding document: " + error);
+		    showDanger("Error adding document: " + error);
 		    return false;
 		});
 
 	}
 }
-
 function showAlert(msg) {
-	'use strict';
-
-	let snackbarContainer = document.querySelector('#demo-snackbar-example');
-	let showSnackbarButton = document.querySelector('#demo-show-snackbar');
-
 	let data = {
 	  message: msg,
 	  timeout: 2000,
-	  actionHandler: '',
 	  actionText: ''
 	};
-	snackbarContainer.MaterialSnackbar.showSnackbar(data);
+	notification.MaterialSnackbar.showSnackbar(data);
+}
+let snackbarColor;
+function showDanger(msg) {
+	
+	notification.style.backgroundColor = 'red';
+	let data = {
+	  message: msg,
+	  timeout: 2000,
+	  actionText: ''
+	};
+	notification.MaterialSnackbar.showSnackbar(data);
+	setTimeout(function(){ notification.style.backgroundColor = snackbarColor; }, 2000);
 }

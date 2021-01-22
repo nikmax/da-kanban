@@ -12,7 +12,8 @@
 
     .modal-content {
       margin: 10% auto;
-      border-radius:5px
+      border-radius:15px;
+      min-width:70vw;
     }
 
     .mdl-card__actions { background-color: rgba(222, 222, 222, 0.25); }
