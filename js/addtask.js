@@ -61,6 +61,10 @@ function showForm(e,id){
 	el.namedItem('id').value = id;
 	if(id == ''){
 		el.namedItem('title').value = '';
+		el.namedItem('description').value = '';
+		el.namedItem('urgency').value = '';
+		el.namedItem('category').value = '';
+		el.namedItem('duedate').value = '';
 		document.querySelector('#create').innerHTML = 'CREATE NEW TASK';
 		document.querySelector('.sidebar').classList.remove('is-visible');
 		document.querySelector('.mdl-layout__obfuscator').classList.remove('is-visible');
@@ -97,7 +101,10 @@ function createTask (){
 	else {
 		let name = "nobody";
 	}
-
+	if(el.namedItem('title').value == '' || el.namedItem('description').value == '' || el.namedItem('urgency').value == '' || el.namedItem('category').value == '' || el.namedItem('duedate').value == ''){
+			showDanger("Elemente dürfen nicht leer sein!");
+			return false;
+	}
 	if (el.namedItem('id').value == ''){
 		// Add a new document with a generated id and return the document or false
 		db.collection("tasks").add({
@@ -111,11 +118,12 @@ function createTask (){
 		    'position' : 'backlog'
 		})
 		.then(function(docRef) {
-		    showAlert("Document written with ID: "+ docRef.id);
-			
-			el.namedItem('title').value = "";
-			el.namedItem('description').value = "";
-			el.namedItem('category').value = "";
+	    showAlert("Document written with ID: "+ docRef.id);
+			el.namedItem('title').value = '';
+			el.namedItem('description').value = '';
+			el.namedItem('urgency').value = '';
+			el.namedItem('category').value = '';
+			el.namedItem('duedate').value = '';
 			el.namedItem('title').focus();
 			document.querySelector('#addtask').style.display = "none";
 			return docRef;
