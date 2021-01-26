@@ -132,7 +132,7 @@ function renderTaskHtml(task) {
         <div class="mdl-card__actions mdl-card--border task-item-action-row">
           <span class="icon-text"><i class="material-icons" title="Due date">alarm</i><span>${task.duedate}</span></span>
           <span>
-            <a href="#"><i class="material-icons" title="Done">done</i></a>
+            <a href="#" onclick="completeTask('${task.id}')")><i class="material-icons" title="Complete">done</i></a>
             <a href="#" class="edit-link" data-id="${task.id}"><i class="material-icons" title="Edit">edit</i></a>
           </span>
         </div>
@@ -147,15 +147,17 @@ function htmlToElement(html) {
     return template.content.firstChild;
 }
 
-db.collection('tasks').where('position', '!=', 'backlog')
+db.collection('tasks').where('position', 'in', ['todo','inprogress','testing','done'])
     .onSnapshot(function (snapshot) {
         snapshot.docChanges().forEach(function (change) {
+            // render new tasks on the board
             if (change.type === "added") {
                 console.log("New task: ", change.doc.data());
                 let task = change.doc.data();
                 task.id = change.doc.id;
                 renderTask(task);
             }
+            // clean and re-render updated tasks on the board
             if (change.type === "modified") {
                 console.log("Modified task: ", change.doc.data());
                 document.getElementById(change.doc.id).remove();
@@ -163,9 +165,21 @@ db.collection('tasks').where('position', '!=', 'backlog')
                 task.id = change.doc.id;
                 renderTask(task);
             }
+            //remove tasks from the board
             if (change.type === "removed") {
                 console.log("Removed task: ", change.doc.data());
                 document.getElementById(change.doc.id).remove();
             }
         });
     });
+
+// Complete Task
+
+function completeTask(id){
+    db.collection('tasks').doc(id).update({ position: 'completed' });
+    notification.MaterialSnackbar.showSnackbar(
+        {
+            message: 'Task completed'
+        }
+    );
+}
