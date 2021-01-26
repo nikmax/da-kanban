@@ -1,5 +1,7 @@
 /* Drag & Drop Section */
 
+function dragAndDrop(){
+
 // Handle draggable items
 
 const draggableElements = document.querySelectorAll('.task-item');
@@ -55,6 +57,7 @@ function drop(event) {
         node = node.parentNode;
     }
     dragged.parentNode.removeChild(dragged);
+    db.collection('tasks').doc(dragged.id).update({position:node.id});
     node.prepend(dragged);
     node.style.background = '';
     notification.MaterialSnackbar.showSnackbar(
@@ -79,7 +82,7 @@ elem.addEventListener('drop', function);
 
 */
 
-
+};
 
 /* DB read/write section */
 
@@ -101,48 +104,53 @@ firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 var db = firebase.firestore();
 
-class Task {
-    constructor(title, duedate, date, category, urgency, user, description, position) {
-        this.title = title;
-        this.duedate = duedate;
-        this.date = date;
-        this.category = category;
-        this.urgency = urgency;
-        this.user = user;
-        this.description = description;
-        this.position = position;
-    }
-    toString() {
-        return this.title + ', ' + this.duedate + ', ' + this.date + ', ' + this.category + ', ' + this.urgency + ', ' + this.user + ', ' + this.description + ', ' + this.position;
-    }
-}
-
-// Firestore data converter
-var taskConverter = {
-    toFirestore: function (task) {
-        return {
-            title: task.title,
-            duedate: task.duedate,
-            date: task.date,
-            category: task.category,
-            urgency: task.urgency,
-            user: task.user,
-            description: task.description,
-            position: task.position
-        };
-    },
-    fromFirestore: function (snapshot, options) {
-        const data = snapshot.data(options);
-        return new Task(data.title, data.duedate, data.date, data.category, data.urgency, data.user, data.description, data.position);
-    }
-};
-
 db.collection('tasks').where('position', '!=', 'backlog')
-    .withConverter(taskConverter)
-    .onSnapshot(function (querySnapshot) {
+    .get()
+    .then(function(querySnapshot) {
         var tasks = [];
         querySnapshot.forEach(function (doc) {
-            tasks.push(doc.data());
+            let task = doc.data();
+            task.id = doc.id;
+            tasks.push(task);
+            console.log(task);
         });
-        console.log(tasks);
+        tasks.forEach(task => renderTask(task));
+        dragAndDrop();
     });
+
+function renderTask(task) {
+    let col = document.getElementById(task.position);
+    let node = htmlToElement(renderTaskHtml(task));
+    col.append(node);
+}
+
+function renderTaskHtml(task) {
+    return `
+        <div class="mdl-card mdl-shadow--2dp mdl-cell--12-col task-item" id="${task.id}">
+        <div class="mdl-card__title mdl-card--expand">
+          <h2 class="mdl-card__title-text">${task.title}</h2>
+        </div>
+        <div class="mdl-card__title">
+          <div class="mdl-card__subtitle-text icon-text"><i class="material-icons" title="Assignee">person</i>${task.user}</div>
+        </div>
+        <div class="mdl-card__title">
+          <div class="mdl-card__subtitle-text icon-text"><i class="material-icons" title="Category">folder</i>${task.category}</div>
+        </div>
+        <div class="mdl-card__supporting-text">${task.description}</div>
+        <div class="mdl-card__actions mdl-card--border task-item-action-row">
+          <span class="icon-text"><i class="material-icons" title="Due date">alarm</i><span>${task.duedate}</span></span>
+          <span>
+            <a href="#"><i class="material-icons" title="Done">done</i></a>
+            <a href="#"><i class="material-icons" title="Edit">edit</i></a>
+          </span>
+        </div>
+      </div>
+      `
+}
+
+function htmlToElement(html) {
+    var template = document.createElement('template');
+    html = html.trim(); // Never return a text node of whitespace as the result
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
