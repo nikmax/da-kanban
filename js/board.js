@@ -1,71 +1,76 @@
 /* Drag & Drop Section */
 
-function dragAndDrop(){
-
-// Handle draggable items
-
-const draggableElements = document.querySelectorAll('.task-item');
-draggableElements.forEach(elem => {
+function dragAndDrop(elem) {
     elem.setAttribute('draggable', true);
     elem.addEventListener('dragstart', dragStart);
     elem.addEventListener('dragend', dragEnd);
-});
+};
 
-// Handle droppable items
+    // Handle draggable items
 
-const droppableElements = document.querySelectorAll('.item-column');
-droppableElements.forEach(elem => {
-    elem.addEventListener('dragover', dragOver);
-    elem.addEventListener('dragenter', dragEnter);
-    elem.addEventListener('dragleave', dragLeave);
-    elem.addEventListener('drop', drop);
-});
+    const draggableElements = document.querySelectorAll('.task-item');
+    draggableElements.forEach(elem => {
+        elem.setAttribute('draggable', true);
+        elem.addEventListener('dragstart', dragStart);
+        elem.addEventListener('dragend', dragEnd);
+    });
 
-// Drag & Drop function
+    // Handle droppable items
 
-// Dragged Item
+    const droppableElements = document.querySelectorAll('.item-column');
+    droppableElements.forEach(elem => {
+        elem.addEventListener('dragover', dragOver);
+        elem.addEventListener('dragenter', dragEnter);
+        elem.addEventListener('dragleave', dragLeave);
+        elem.addEventListener('drop', drop);
+    });
 
-function dragStart(event) {
-    dragged = event.target;
-    event.target.style.opacity = .5;
-}
+    // Drag & Drop function
 
-function dragEnd(event) {
-    event.target.style.opacity = '';
-}
+    // Dragged Item
 
-// Drop Target
-
-function dragEnter(event) {
-    let placeholder = dragged;
-    if (event.target.className == 'item-column') {
-        event.target.prepend(placeholder);
+    function dragStart(event) {
+        dragged = event.target;
+        event.target.style.opacity = .5;
     }
-}
 
-function dragLeave(event) {
-}
-
-function dragOver(event) {
-    event.preventDefault();
-}
-
-function drop(event) {
-    event.preventDefault();
-    let node = event.target;
-    while (node.className != 'item-column') {
-        node = node.parentNode;
+    function dragEnd(event) {
+        event.target.style.opacity = '';
     }
-    dragged.parentNode.removeChild(dragged);
-    db.collection('tasks').doc(dragged.id).update({position:node.id});
-    node.prepend(dragged);
-    node.style.background = '';
-    notification.MaterialSnackbar.showSnackbar(
-        {
-            message: 'Task moved'
+
+    // Drop Target
+
+    function dragEnter(event) {
+        let placeholder = dragged;
+        if (event.target.className == 'item-column') {
+            event.target.prepend(placeholder);
         }
-    );
-}
+    }
+
+    function dragLeave(event) {
+    }
+
+    function dragOver(event) {
+        event.preventDefault();
+    }
+
+    function drop(event) {
+        event.preventDefault();
+        let node = event.target;
+        while (node.className != 'item-column') {
+            node = node.parentNode;
+        }
+        dragged.parentNode.removeChild(dragged);
+        db.collection('tasks').doc(dragged.id).update({ position: node.id });
+        node.prepend(dragged);
+        node.style.background = '';
+        notification.MaterialSnackbar.showSnackbar(
+            {
+                message: 'Task moved'
+            }
+        );
+    }
+
 
 // Success message
 
@@ -82,7 +87,7 @@ elem.addEventListener('drop', function);
 
 */
 
-};
+
 
 /* DB read/write section */
 
@@ -104,24 +109,11 @@ firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 var db = firebase.firestore();
 
-db.collection('tasks').where('position', '!=', 'backlog')
-    .get()
-    .then(function(querySnapshot) {
-        var tasks = [];
-        querySnapshot.forEach(function (doc) {
-            let task = doc.data();
-            task.id = doc.id;
-            tasks.push(task);
-            console.log(task);
-        });
-        tasks.forEach(task => renderTask(task));
-        dragAndDrop();
-    });
-
 function renderTask(task) {
     let col = document.getElementById(task.position);
     let node = htmlToElement(renderTaskHtml(task));
     col.append(node);
+    dragAndDrop(node);
 }
 
 function renderTaskHtml(task) {
@@ -141,7 +133,7 @@ function renderTaskHtml(task) {
           <span class="icon-text"><i class="material-icons" title="Due date">alarm</i><span>${task.duedate}</span></span>
           <span>
             <a href="#"><i class="material-icons" title="Done">done</i></a>
-            <a href="#"><i class="material-icons" title="Edit">edit</i></a>
+            <a href="#" class="edit-link" data-id="${task.id}"><i class="material-icons" title="Edit">edit</i></a>
           </span>
         </div>
       </div>
@@ -154,3 +146,26 @@ function htmlToElement(html) {
     template.innerHTML = html;
     return template.content.firstChild;
 }
+
+db.collection('tasks').where('position', '!=', 'backlog')
+    .onSnapshot(function (snapshot) {
+        snapshot.docChanges().forEach(function (change) {
+            if (change.type === "added") {
+                console.log("New task: ", change.doc.data());
+                let task = change.doc.data();
+                task.id = change.doc.id;
+                renderTask(task);
+            }
+            if (change.type === "modified") {
+                console.log("Modified task: ", change.doc.data());
+                document.getElementById(change.doc.id).remove();
+                let task = change.doc.data();
+                task.id = change.doc.id;
+                renderTask(task);
+            }
+            if (change.type === "removed") {
+                console.log("Removed task: ", change.doc.data());
+                document.getElementById(change.doc.id).remove();
+            }
+        });
+    });
