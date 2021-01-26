@@ -24,6 +24,18 @@ h3 {
     margin-bottom: 16px;
 }
 
+.task-item-action-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+
+.due-date {
+    display: flex;
+    align-items: center;
+}
+
 .addtaskform {
     display: flex;
     flex-direction: column;
