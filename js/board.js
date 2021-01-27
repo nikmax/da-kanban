@@ -117,6 +117,12 @@ function renderTask(task) {
 }
 
 function renderTaskHtml(task) {
+    // Limit description length
+    if (task.description.length > 200) {
+        task.description = task.description.substring(0,199) + '...'
+    }
+    
+    // Return HTML string
     return `
         <div class="mdl-card mdl-shadow--2dp mdl-cell--12-col task-item" id="${task.id}">
         <div class="mdl-card__title mdl-card--expand">
