@@ -142,9 +142,12 @@ function renderTaskHtml(task) {
         <div class="mdl-card__title">
           <div class="mdl-card__subtitle-text icon-text"><i class="material-icons" title="Category">folder</i>${task.category}</div>
         </div>
+        <div class="mdl-card__title">
+        <div class="mdl-card__subtitle-text icon-text"><i class="material-icons" title="Urgency">alarm</i>${task.urgency}</div>
+      </div>
         <div class="mdl-card__supporting-text">${task.description}</div>
         <div class="mdl-card__actions mdl-card--border task-item-action-row">
-          <span class="icon-text"><i class="material-icons" title="Due date">alarm</i><span>${task.duedate}</span></span>
+          <span class="icon-text"><i class="material-icons" title="Due date">today</i><span>${task.duedate}</span></span>
           <span>
             <a href="#" onclick="completeTask('${task.id}')")><i class="material-icons" title="Complete">done</i></a>
             <a href="#" class="edit-link" data-id="${task.id}"><i class="material-icons" title="Edit">edit</i></a>
