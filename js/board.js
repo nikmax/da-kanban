@@ -117,11 +117,19 @@ function renderTask(task) {
 }
 
 function renderTaskHtml(task) {
-    // Limit description length
+    // Limit field length
     if (task.description.length > 200) {
         task.description = task.description.substring(0,199) + '...'
     }
-    
+    if (task.title.length > 40) {
+        task.title = task.title.substring(0,39) + '...'
+    }
+    if (task.category.length > 40) {
+        task.category = task.category.substring(0,39) + '...'
+    }
+    if (task.user.length > 40) {
+        task.user = task.user.substring(0,39) + '...'
+    }
     // Return HTML string
     return `
         <div class="mdl-card mdl-shadow--2dp mdl-cell--12-col task-item" id="${task.id}">
