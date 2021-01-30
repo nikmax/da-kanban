@@ -11,7 +11,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Join</title>
   <script src="js/board.js" defer></script>
-  <script src="js/addtask.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-firestore.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-analytics.js"></script>
@@ -25,6 +24,8 @@
       <div class="mdl-card__title mdl-card--expand">
         <form action="#" st>
           <input type="hidden" name="id" value="create">
+          <input type="hidden" name="position" value="backlog">
+          <input type="hidden" name="user" value="">
           <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
             <input class="mdl-textfield__input" type="text" id="title" name="title">
             <label class="mdl-textfield__label" for="title">Task Title...</label>
@@ -77,7 +78,8 @@
       </nav>
     </header>
     <main class="mdl-layout__content">
-      <div class="page-content mdl-grid">
+
+      <div id="board" class="page-content mdl-grid">
         <h1 class="mdl-cell mdl-cell--12-col">Board</h1>
         <div class="mdl-cell mdl-cell--3-col-desktop mdl-cell--4col-tablet mdl-cell--4col-phone board-column">
           <h3>To Do</h3>
@@ -102,7 +104,14 @@
           </div>
         </div>
       </div>
-      <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored addtaskfab">
+
+      <div id="backlog" style="display:none;" class=" page-content mdl-grid">
+        <h1 class="mdl-cell mdl-cell--12-col">Backlog</h1>
+        <div class="mdl-cell mdl-cell--12-col-desktop mdl-cell--12col-tablet mdl-cell--12col-phone board-column">
+          <h3>Backlog</h3><div class="item-column"></div>
+        </div>
+      </div>
+      <button id="addbutton" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored addtaskfab">
         <i class="material-icons">add</i>
       </button>
       <div aria-live="assertive" class="mdl-snackbar mdl-js-snackbar">

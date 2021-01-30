@@ -30,3 +30,6 @@
     .mdl-snackbar__action {
       color: #ffffff;
     }
+    .hidden {
+      display: none;
+    }
