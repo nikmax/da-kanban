@@ -18,18 +18,19 @@ function renderTaskHtml(task) {
     */
     // Return HTML string
     // <div class="mdl-cell mdl-cell--12-col-desktop mdl-cell--12col-tablet mdl-cell--12col-phone board-column"></div>
-    let html = `
-        <div class="mdl-shadow--2dp mdl-cell--12-col backlog" id="${task.id}" onmouseover="MouseOver(this)" onmouseout="MouseOut(this)">
-            <span class="mdl-cell--3-col backlog-item">${task.user} </span>
-            <span class="mdl-cell--2-col backlog-item">${task.category} </span>
-            <span class="mdl-cell--7-col backlog-item">${task.description} </span>
+    let lines = task.description.split('\n');
+    if(lines[0].length > 40) lines[0] = lines[0].substr(0,40) + '...';
+
+    let html = `<div class="mdl-shadow--2dp mdl-cell--12-col backlog" id="${task.id}" onmouseover="MouseOver(this)" onmouseout="MouseOut(this)">
+            <div style="min-width:10vw;">${task.user} </div>
+            <div style="min-width:15vw;">${task.category} </div>
+            <div style="min-width:45vw;">${lines[0]} </div>
             <span class="actions">
                 <a href="#" onclick="boardTask('${task.id}')")><i class="material-icons" title="ToDo">done</i></a>
                 <a href="#" onclick="showForm('${task.id}')"><i class="material-icons" title="Edit">edit</i></a>
                 <a href="#" onclick="deleteTask('${task.id}')"><i class="material-icons" title="Delete">delete</i></a>
             </span>
-        </div>
-      `;
+        </div>`;
       return html;
 }
 
@@ -43,11 +44,12 @@ function htmlToElement(html) {
 db.collection('tasks').where('position', '==', 'backlog')
     .onSnapshot(function (snapshot) {
         snapshot.docChanges().forEach(function (change) {
-            console.log(change.type);
+            console.log(change.doc.data());
             if (change.type === "added") {
                 let task = change.doc.data();
                 task.id = change.doc.id;
                 let row = document.getElementById("backlog");
+
                 let node = htmlToElement(renderTaskHtml(task));
                 row.append(node);
             }
