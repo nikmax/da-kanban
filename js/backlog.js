@@ -18,19 +18,24 @@ function renderTaskHtml(task) {
     */
     // Return HTML string
     // <div class="mdl-cell mdl-cell--12-col-desktop mdl-cell--12col-tablet mdl-cell--12col-phone board-column"></div>
+    if (task.user == '') task.user = 'Noname';
     let lines = task.description.split('\n');
-    if(lines[0].length > 40) lines[0] = lines[0].substr(0,40) + '...';
+    if(lines[0].length > 120) lines[0] = lines[0].substr(0,120) + '...';
 
-    let html = `<div class="mdl-shadow--2dp mdl-cell--12-col backlog" id="${task.id}" onmouseover="MouseOver(this)" onmouseout="MouseOut(this)">
-            <div style="min-width:10vw;">${task.user} </div>
-            <div style="min-width:15vw;">${task.category} </div>
-            <div style="min-width:45vw;">${lines[0]} </div>
-            <span class="actions">
-                <a href="#" onclick="boardTask('${task.id}')")><i class="material-icons" title="ToDo">done</i></a>
-                <a href="#" onclick="showForm('${task.id}')"><i class="material-icons" title="Edit">edit</i></a>
-                <a href="#" onclick="deleteTask('${task.id}')"><i class="material-icons" title="Delete">delete</i></a>
-            </span>
-        </div>`;
+    let html =`
+            <li class="mdl-list__item mdl-list__item--three-line backlog" id="${task.id}"> <!--onmouseover="MouseOver(this)" onmouseout="MouseOut(this)" -->
+                <span class="mdl-list__item-primary-content">
+                    <i class="material-icons mdl-list__item-avatar">person</i>
+                    <span>${task.title}</span>
+                    <span class="mdl-list__item-text-body"><i>${task.user} - </i>${lines[0]}</span>
+                </span>
+                <span class="mdl-list__item-secondary-content">
+                    <span>${task.category}</span>
+                    <a class="mdl-list__item-secondary-action" href="#">
+                        <i class="material-icons"  onclick="showForm('${task.id}')">edit</i><i class="material-icons"  onclick="boardTask('${task.id}')">done</i><i class="material-icons" onclick="deleteTask('${task.id}')" title="Delete">delete</i>
+                    </a>
+                </span>
+        </li>`;
       return html;
 }
 
