@@ -30,7 +30,8 @@ function renderTaskHtml(task) {
                     <span class="mdl-list__item-text-body"><i>${task.user} - </i>${lines[0]}</span>
                 </span>
                 <span class="mdl-list__item-secondary-content">
-                    <span>${task.category}</span>
+
+                    <span class="mdc-list-item__meta">${task.category}</span>
                     <a class="mdl-list__item-secondary-action" href="#">
                         <i class="material-icons"  onclick="showForm('${task.id}')">edit</i><i class="material-icons"  onclick="boardTask('${task.id}')">done</i><i class="material-icons" onclick="deleteTask('${task.id}')" title="Delete">delete</i>
                     </a>
