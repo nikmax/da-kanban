@@ -21,28 +21,30 @@
   <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-analytics.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.2.2/firebase-auth.js"></script>
   <style type="text/css">
-		.backlog{
-		font-family: 'PT Sans', sans-serif;
-		min-height: 100px;
-		font-size: 30px;
-		background-color: beige;
-		padding: 25px;
-		margin: 10px;
-		align-items: center;
-		display: flex;
-		border-radius: 15px;
-		position: relative;
-		}
+		.backlog {
+        font-family: 'PT Sans', sans-serif;
+        /* min-height: 100px; */
+        font-size: x-large;
+        background-color: #e6e6e6;
+        /* padding: 25px; */
+        margin: 10px;
+        /* align-items: center; */
+        /* display: flex; */
+        border-radius: 15px;
+        position: relative;
+    }
 		.backlog-item{
-		margin: 5px;
+    		margin: 5px;
 		}
 		.actions {
+      display: none;
 		opacity: 0;
 		transition: opacity 1s;
 		position: relative;
 
 		}
 		.actions-hover {
+      display: unset;
 		opacity: 1.0;
 		cursor: pointer;
 		transition: opacity 1s;
@@ -116,9 +118,10 @@
       </nav>
     </header>
     <main class="mdl-layout__content">
-      <div id="backlog" class="page-content mdl-grid">
-        <h3 style="font-weight: bold;">Backlog</h3>
-      </div>
+      <div class="page-content mdl-grid">
+        <h3 style="font-weight: bold;" class="mdl-cell mdl-cell--12-col">Backlog</h3>
+        <ul id="backlog" class="mdl-list"></ul>
+    </div>
       <button id="addbutton" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored addtaskfab">
         <i class="material-icons">add</i>
       </button>
