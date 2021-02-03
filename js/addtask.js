@@ -1,38 +1,63 @@
 window.addEventListener('load',addTaskInit);
 
-function addTaskInit(){
-    snackbarColor = notification.style.backgroundColor;
-    /*   document.querySelector('[href="addtask.html"]')
-        .addEventListener('click',function(e){e.preventDefault(); showForm(''); });
 
-    document.querySelector('[href="board.html"]')
-        .addEventListener('click',function(e){
-            e.preventDefault(); 
-            document.querySelector('.sidebar').classList.remove('is-visible');
-            document.querySelector('.mdl-layout__obfuscator').classList.remove('is-visible');
-            document.querySelector('#addtask').style.display = "none";
-            document.querySelector('#board').style.display = "unset";
-            document.querySelector('#backlog').style.display = "none";
-    });
-    */
-    document.querySelector('#addbutton')
-        .addEventListener('click',function(e){ e.preventDefault();showForm(''); });
+let addTaskDiv = `
+    <div class="modal-content mdl-card mdl-shadow--2dp">
+      <div class="mdl-card__title mdl-card--expand">
+        <form action="#" st>
+          <input type="hidden" name="id" value="create">
+          <input type="hidden" name="position" value="backlog">
+          <input type="hidden" name="user" value="">
+          <div class="mdl-textfield mdl-js-textfield">
+            <input class="mdl-textfield__input" type="text" placeholder="Task Title..." id="title" name="title">
+            
+          </div>
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <select class="mdl-textfield__input" id="urgency" name="urgency">
+              <option value="Low">Low</option>
+              <option value="Middle">Middle</option>
+              <option value="High">High</option>
+            </select>
+            <label class="mdl-textfield__label" for="urgency">Urgengy</label>
+          </div>
+          <div class="mdl-textfield mdl-js-textfield">
+            <input class="mdl-textfield__input" type="text" id="category" name="category" list="categories" placeholder="Category">
+            <datalist id="categories"></datalist>
+            
+          </div>
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="date" id="duedate" name="duedate" placeholder="duedate">
+            <label class="mdl-textfield__label" for="duedate"></label>
+          </div>
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <textarea class="mdl-textfield__input" type="text" rows="3" id="description" name="description"></textarea>
+            <label class="mdl-textfield__label" for="description">Description</label>
+          </div>
+        </form>
+      </div>
+      <div class="mdl-card__actions mdl-card--border">
+        <a id="create" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" onclick="createTask()">
+          Create New Task
+        </a>
+      </div>
+      <div class="mdl-card__menu">
+        <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect mdl-custom-close">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+    </div>
+`;
+function addTaskInit(){
+    let node = document.createElement('div');
+    node.innerHTML = addTaskDiv.trim();
+    node.classList.add('modal');
+    node.id = "addtask";
+    document.querySelector('body').appendChild(node);
+
+    snackbarColor = notification.style.backgroundColor;
+
     document.querySelector(".mdl-custom-close").onclick = function() {//        'use strict';   
         document.querySelector('#addtask').style.display = "none";
-    }
-    document.querySelector('#create').addEventListener('click', createTask, false);
-    /*
-        document.querySelectorAll('a[data-id]').forEach(function(el,i){
-            el.addEventListener('click',function(e){
-                showForm(e,el.getAttribute('data-id'));
-
-            });
-        });*/
-    /* Use if you whant to close modal when click outside of modal window */
-    window.onclick = function(event) {//'use strict';
-        if (event.target == document.querySelector('#addtask')) {
-            //document.querySelector('#addtask').style.display = "none";
-        }
     }
     db.collection("tasks")
       .onSnapshot(function(querySnapshot) {
@@ -51,12 +76,11 @@ function addTaskInit(){
           });
           for(let i in catArray){
             categories.innerHTML += `<option value="${i}">`;
-                    //console.log(`<option value="${i} (${catArray[i]})">`);
           }
           
       });
 
-    const auth = firebase.auth();
+    
     firebase.auth().onAuthStateChanged(function(u) {
         if (u) {
           //showAlert('User is signed in.');

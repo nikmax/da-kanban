@@ -1,23 +1,6 @@
 
 
 function renderTaskHtml(task) {
-    // Limit field length
-    /*
-        if (task.description.length > 200) {
-            task.description = task.description.substring(0, 199) + '...'
-        }
-        if (task.title.length > 40) {
-            task.title = task.title.substring(0, 39) + '...'
-        }
-        if (task.category.length > 40) {
-            task.category = task.category.substring(0, 39) + '...'
-        }
-        if (task.user.length > 40) {
-            task.user = task.user.substring(0, 39) + '...'
-        }
-    */
-    // Return HTML string
-    // <div class="mdl-cell mdl-cell--12-col-desktop mdl-cell--12col-tablet mdl-cell--12col-phone board-column"></div>
     if (task.user == '') task.user = 'Noname';
     let lines = task.description.split('\n');
     if(lines[0].length > 120) lines[0] = lines[0].substr(0,120) + '...';
@@ -41,7 +24,7 @@ function renderTaskHtml(task) {
 }
 
 function htmlToElement(html) {
-    var template = document.createElement('template');
+    let template = document.createElement('template');
     html = html.trim(); // Never return a text node of whitespace as the result
     template.innerHTML = html;
     return template.content.firstChild;
