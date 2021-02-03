@@ -94,7 +94,7 @@ elem.addEventListener('drop', function);
 function renderTask(task) {
     let col = document.getElementById(task.position);
     let node = htmlToElement(renderTaskHtml(task));
-    col.append(node);
+    col.prepend(node);
     dragAndDrop(node);
 }
 
