@@ -2,9 +2,9 @@ window.addEventListener('load',addTaskInit);
 
 function addTaskInit(){
     snackbarColor = notification.style.backgroundColor;
-    document.querySelector('[href="addtask.html"]')
+    /*   document.querySelector('[href="addtask.html"]')
         .addEventListener('click',function(e){e.preventDefault(); showForm(''); });
-    /*
+
     document.querySelector('[href="board.html"]')
         .addEventListener('click',function(e){
             e.preventDefault(); 
