@@ -16,7 +16,7 @@ function renderTaskHtml(task) {
 
                     <span class="mdc-list-item__meta">${task.category}</span>
                     <a class="mdl-list__item-secondary-action" href="#">
-                        <i class="material-icons"  onclick="showForm('${task.id}')">edit</i><i class="material-icons"  onclick="boardTask('${task.id}')">publish</i><i class="material-icons" onclick="deleteTask('${task.id}')" title="Delete">delete</i>
+                        <i class="material-icons"  title="Edit" onclick="showForm('${task.id}')">edit</i><i class="material-icons" onclick="boardTask('${task.id}')" title="Publish to Board">publish</i><i class="material-icons" onclick="deleteTask('${task.id}')" title="Delete">delete</i>
                     </a>
                 </span>
         </li>`;
