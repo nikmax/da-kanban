@@ -1,0 +1,38 @@
+.backlog {
+    font-family: 'PT Sans', sans-serif;
+    /* min-height: 100px; */
+    font-size: x-large;
+    background-color: #e6e6e6;
+    /* padding: 25px; */
+    margin: 10px;
+    /* align-items: center; */
+    /* display: flex; */
+    border-radius: 15px;
+    position: relative;
+  }
+
+  .backlog-item {
+    margin: 5px;
+  }
+
+  .actions {
+    display: none;
+    opacity: 0;
+    transition: opacity 1s;
+    position: relative;
+
+  }
+
+  .actions-hover {
+    display: unset;
+    opacity: 1.0;
+    cursor: pointer;
+    transition: opacity 1s;
+  }
+
+  .addtaskfab {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    z-index: 1;
+  }
