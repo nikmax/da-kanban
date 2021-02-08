@@ -33,3 +33,22 @@
     .hidden {
       display: none;
     }
+    .form {
+      background-color: darkblue;
+      color: white;
+    }
+    label{
+      font-size: larger;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    input, textarea, select {
+      border-style: none;
+      min-height: 50px;
+      margin: 10px;
+      font-size: larger;
+      font-weight: bold;
+      width: 90%;
+      background-color: white;
+      border-radius: 5px;
+    }

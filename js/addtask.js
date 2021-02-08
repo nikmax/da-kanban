@@ -3,50 +3,70 @@ window.addEventListener('load',addTaskInit);
 
 let addTaskDiv = `
     <div class="modal-content mdl-card mdl-shadow--2dp">
-      <div class="mdl-card__title mdl-card--expand">
-        <form action="#" st>
-          <input type="hidden" name="id" value="create">
-          <input type="hidden" name="position" value="backlog">
-          <input type="hidden" name="user" value="">
-          <div class="mdl-textfield mdl-js-textfield">
-            <input class="mdl-textfield__input" type="text" placeholder="Task Title..." id="title" name="title">
-            
-          </div>
-          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            <select class="mdl-textfield__input" id="urgency" name="urgency">
-              <option value="Low">Low</option>
-              <option value="Middle">Middle</option>
-              <option value="High">High</option>
-            </select>
-            <label class="mdl-textfield__label" for="urgency">Urgengy</label>
-          </div>
-          <div class="mdl-textfield mdl-js-textfield">
-            <input class="mdl-textfield__input" type="text" id="category" name="category" list="categories" placeholder="Category">
-            <datalist id="categories"></datalist>
-            
-          </div>
-          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            <input class="mdl-textfield__input" type="date" id="duedate" name="duedate" placeholder="duedate">
-            <label class="mdl-textfield__label" for="duedate"></label>
-          </div>
-          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            <textarea class="mdl-textfield__input" type="text" rows="3" id="description" name="description"></textarea>
-            <label class="mdl-textfield__label" for="description">Description</label>
-          </div>
+      <div class="form mdl-card__title mdl-card--expand">
+      <form action="#"  st class="mdl-layout__content">
+            <div class="mdl-grid">
+                <div mdl-cell mdl-cell--12-col">
+                  <input type="hidden" name="id" value="create">
+                  <input type="hidden" name="user" value="">
+                </div>
+            </div>
+            <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--6-col">
+                  <label for="title">Title</label><br>
+                  <input type="text" placeholder="Title" id="title" name="title">
+                </div>
+                <div class="mdl-cell mdl-cell--6-col">
+                  <label for="duedate">Duedate</label><br>
+                  <input type="date" id="duedate" name="duedate" placeholder="duedate">
+                </div>
+            </div>  
+            <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--6-col">
+                  <label for="category">Category</label><br>
+                  <input type="text" id="category" name="category" list="categories" placeholder="Category">
+                  <datalist id="categories"></datalist>
+                </div>
+                <div class="mdl-cell mdl-cell--6-col">
+                  <label for="urgency">Urgency</label><br>
+                  <select id="urgency" name="urgency">
+                      <option value="Low">Low</option>
+                      <option value="Middle">Middle</option>
+                      <option value="High" selected>High</option>
+                  </select>
+                </div>
+            </div>  
+
+            <div class="mdl-grid">
+              <div class="mdl-cell mdl-cell--6-col">
+                  <label for="description">Description</label><br>
+                  <textarea type="text" rows="3" id="description" name="description"></textarea>
+              </div>
+              <div class="mdl-cell mdl-cell--6-col">
+                  <label for="position">Position</label>
+                  <select id="position" name="position">
+                  <option value="backlog">Backlog</option>
+                  <option value="todo">ToDo</option>
+                  <option value="inprogress">InProgress</option>
+                  <option value="testing">Testing</option>
+                  </select>
+              </div>
+            </div>
         </form>
+
       </div>
       <div class="mdl-card__actions mdl-card--border">
         <a id="create" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" onclick="createTask()">
           Create New Task
         </a>
+        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-custom-close">
+          Close
+        </a>
       </div>
-      <div class="mdl-card__menu">
-        <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect mdl-custom-close">
-          <span class="material-icons">close</span>
-        </button>
-      </div>
+      
     </div>
 `;
+
 function addTaskInit(){
     let node = document.createElement('div');
     node.innerHTML = addTaskDiv.trim();
@@ -97,8 +117,8 @@ function showForm(id){
     clearForm(el,false);
     if(id == ''){
         document.querySelector('#create').innerHTML = 'CREATE NEW TASK';
-        document.querySelector('.sidebar').classList.remove('is-visible');
-        document.querySelector('.mdl-layout__obfuscator').classList.remove('is-visible');
+        //document.querySelector('.sidebar').classList.remove('is-visible');
+        //document.querySelector('.mdl-layout__obfuscator').classList.remove('is-visible');
     }else{
         db.collection("tasks").doc(id)
         .get().then(function(doc) {
@@ -141,6 +161,7 @@ function showDanger(msg) {
     setTimeout(function(){ notification.style.backgroundColor = snackbarColor; }, 2000);
 }
 function clearForm(el,hide){
+    el.namedItem('position').value = "";
     el.namedItem('id').value = "";
     el.namedItem('title').value = "";
     el.namedItem('urgency').value = "";
@@ -161,7 +182,7 @@ function createTask (){
     } else {let name = "nobody";}
     id = el.namedItem('id').value;
     if (id == ''){
-        if(el.namedItem('title').value == '' || el.namedItem('description').value == '' || el.namedItem('urgency').value == '' || el.namedItem('category').value == '' || el.namedItem('duedate').value == ''){
+        if(el.namedItem('position').value == '' || el.namedItem('title').value == '' || el.namedItem('description').value == '' || el.namedItem('urgency').value == '' || el.namedItem('category').value == '' || el.namedItem('duedate').value == ''){
             showDanger("Elemente dürfen nicht leer sein!");
             return false;
         }
@@ -172,7 +193,7 @@ function createTask (){
             'category' : el.namedItem('category').value,
             'urgency' : el.namedItem('urgency').value,
             'user' : name,
-            'position' : 'backlog',
+            'position' :  el.namedItem('position').value,
             'description' : el.namedItem('description').value
         }).then(function(){
             showAlert("Task created");
