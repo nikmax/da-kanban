@@ -1,5 +1,6 @@
 window.addEventListener('load',addTaskInit);
 
+let attrs = ['position','user','id','urgency','category','duedate','description','title'];
 
 let addTaskDiv = `
     <div class="modal-content mdl-card mdl-shadow--2dp">
@@ -14,22 +15,22 @@ let addTaskDiv = `
             <div class="mdl-grid">
                 <div class="mdl-cell mdl-cell--6-col">
                   <label for="title">Title</label><br>
-                  <input type="text" placeholder="Title" id="title" name="title">
+                  <input type="text" placeholder="Title" id="title" name="title" required>
                 </div>
                 <div class="mdl-cell mdl-cell--6-col">
                   <label for="duedate">Duedate</label><br>
-                  <input type="date" id="duedate" name="duedate" placeholder="duedate">
+                  <input type="date" id="duedate" name="duedate" placeholder="duedate"required >
                 </div>
             </div>  
             <div class="mdl-grid">
                 <div class="mdl-cell mdl-cell--6-col">
                   <label for="category">Category</label><br>
-                  <input type="text" id="category" name="category" list="categories" placeholder="Category">
+                  <input type="text" id="category" name="category" list="categories" placeholder="Category" required>
                   <datalist id="categories"></datalist>
                 </div>
                 <div class="mdl-cell mdl-cell--6-col">
                   <label for="urgency">Urgency</label><br>
-                  <select id="urgency" name="urgency">
+                  <select id="urgency" name="urgency" required>
                       <option value="Low">Low</option>
                       <option value="Middle">Middle</option>
                       <option value="High" selected>High</option>
@@ -123,17 +124,14 @@ function showForm(id){
         db.collection("tasks").doc(id)
         .get().then(function(doc) {
             if (doc.exists){
-                el.namedItem('position').value = doc.data().position;
-                el.namedItem('user').value = doc.data().user;
-                el.namedItem('id').value = id;
-                el.namedItem('urgency').value = doc.data().urgency;
-                el.namedItem('category').value = doc.data().category;
-                el.namedItem('duedate').value = doc.data().duedate;
-                el.namedItem('description').value = doc.data().description;
-                el.namedItem('title').value = doc.data().title;
-                //el.namedItem('title').parentNode.classList.add('is-upgraded');
-                document.querySelector('#create').innerHTML = 'UPDATE MODIEFIED TASK';
-                //document.querySelector('#create').removeEventListener('click', createTask, false); 
+              let item = doc.data();
+              for (let i = 0; i < attrs.length; i++){
+                let attr = attrs[i];
+                el[attr].value  = item[attr];
+              }
+              el['id'].value = id;
+              document.querySelector('#create').innerHTML = 'UPDATE MODIEFIED TASK';
+              //document.querySelector('#create').removeEventListener('click', createTask, false); 
             } else {
                 showDanger("No such document with id: " + id);
         }}).catch(function(error) {
@@ -161,14 +159,11 @@ function showDanger(msg) {
     setTimeout(function(){ notification.style.backgroundColor = snackbarColor; }, 2000);
 }
 function clearForm(el,hide){
-    el.namedItem('position').value = "";
-    el.namedItem('id').value = "";
-    el.namedItem('title').value = "";
-    el.namedItem('urgency').value = "";
-    el.namedItem('description').value = "";
-    el.namedItem('category').value = "";
-    el.namedItem('duedate').value = "";
-    el.namedItem('title').focus();
+    for (let i = 0; i < attrs.length; i++){
+      let attr = attrs[i];
+      el[attr].value  = "";
+    }
+    el['title'].focus();
     if(hide) document.querySelector('#addtask').style.display = "none";
     else document.querySelector('#addtask').style.display ='block';
 }
@@ -180,37 +175,40 @@ function createTask (){
         let name = firebase.auth().currentUser.displayName;
         //
     } else {let name = "nobody";}
-    id = el.namedItem('id').value;
+    id = el['id'].value;
     if (id == ''){
-        if(el.namedItem('position').value == '' || el.namedItem('title').value == '' || el.namedItem('description').value == '' || el.namedItem('urgency').value == '' || el.namedItem('category').value == '' || el.namedItem('duedate').value == ''){
-            showDanger("Elemente dürfen nicht leer sein!");
-            return false;
-        }
+      try{
         db.collection("tasks").add({
-            'title' : el.namedItem('title').value,
-            'duedate' : el.namedItem('duedate').value,
+            'title' : el['title'].value,
+            'duedate' : el['duedate'].value,
+            'category' : el['category'].value,
+            'urgency' : el['urgency'].value,
+            'position' :  el['position'].value,
+            'description' : el['description'].value,
+
             'date' : firebase.firestore.Timestamp.now().toDate(),
-            'category' : el.namedItem('category').value,
-            'urgency' : el.namedItem('urgency').value,
-            'user' : name,
-            'position' :  el.namedItem('position').value,
-            'description' : el.namedItem('description').value
+            'user' : name
+
         }).then(function(){
             showAlert("Task created");
         }).catch(function(error) {
             showDanger("Error adding document: " + error);
             return false;
         });
+      }catch(error){
+            showDanger("Error modify document: " +error);console.log(error);
+            return false;
+      }
     }else{
         try{
             db.collection("tasks").doc(id).set({
-                    'title' : el.namedItem('title').value,
-                    'duedate' : el.namedItem('duedate').value,
-                    'category' : el.namedItem('category').value,
-                    'urgency' : el.namedItem('urgency').value,
-                    'user' :  el.namedItem('user').value,
-                    'position' :  el.namedItem('position').value,
-                    'description' : el.namedItem('description').value
+                    'title' : el['title'].value,
+                    'duedate' : el['duedate'].value,
+                    'category' : el['category'].value,
+                    'urgency' : el['urgency'].value,
+                    'user' :  el['user'].value,
+                    'position' :  el['position'].value,
+                    'description' : el['description'].value
             });
         }catch(error){
             showDanger("Error modify document: " +error);console.log(error);
