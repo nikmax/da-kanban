@@ -68,6 +68,10 @@ let addTaskDiv = `
     </div>
 `;
 
+/**
+ * @function addTaskInit
+ */
+
 function addTaskInit(){
     let node = document.createElement('div');
     node.innerHTML = addTaskDiv.trim();

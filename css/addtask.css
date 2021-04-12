@@ -34,7 +34,7 @@
       display: none;
     }
     .form {
-      background-color: darkblue;
+      background-color: rgb(63,81,181);
       color: white;
     }
     label{
@@ -47,7 +47,6 @@
       min-height: 50px;
       margin: 10px;
       font-size: larger;
-      font-weight: bold;
       width: 90%;
       background-color: white;
       border-radius: 5px;

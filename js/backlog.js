@@ -1,26 +1,27 @@
-
+window.onresize = function(e){location.reload();};
 
 function renderTaskHtml(task) {
     if (task.user == '') task.user = 'Noname';
-    let lines = task.description.split('\n');
-    if(lines[0].length > 120) lines[0] = lines[0].substr(0,120) + '...';
 
     let html =`
-            <li class="mdl-list__item mdl-list__item--three-line backlog" id="${task.id}"> <!--onmouseover="MouseOver(this)" onmouseout="MouseOut(this)" -->
-                <span class="mdl-list__item-primary-content">
-                    <i class="material-icons mdl-list__item-avatar">person</i>
-                    <span>${task.title}</span>
-                    <span class="mdl-list__item-text-body"><i>${task.user} - </i>${lines[0]}</span>
-                </span>
-                <span class="mdl-list__item-secondary-content">
-
-                    <span class="mdc-list-item__meta">${task.category}</span>
-                    <a class="mdl-list__item-secondary-action" href="#">
-                        <i class="material-icons"  title="Edit" onclick="showForm('${task.id}')">edit</i><i class="material-icons" onclick="boardTask('${task.id}')" title="Publish to Board">publish</i><i class="material-icons" onclick="deleteTask('${task.id}')" title="Delete">delete</i>
-                    </a>
-                </span>
-        </li>`;
-      return html;
+        <li class="mdl-list__item mdl-list__item--three-line backlog" id="${task.id}">
+            <span class="mdl-list__item-primary-content">
+                <i class="material-icons mdl-list__item-avatar">person</i>
+                <span>${task.title}</span>
+                <span class="mdl-list__item-text-body itemdesc"><i>${task.user} - </i>${task.description}</span>
+            </span>
+            <span class="mdl-list__item-secondary-content">
+                <span class="mdc-list-item__meta nowrap">${task.category}</span>
+            </span>
+            <a class="actions" href="#">
+                    <i class="material-icons"  title="Edit" onclick="showForm('${task.id}')">edit
+                    </i><i class="material-icons" onclick="boardTask('${task.id}')"
+                    title="Publish to Board">publish</i><i class="material-icons"
+                    onclick="deleteTask('${task.id}')" title="Delete">delete</i>
+            </a>
+        </li>
+    `;
+    return html;
 }
 
 function htmlToElement(html) {
@@ -60,11 +61,13 @@ function clickAction(task){
     console.log(task);
 }
 function MouseOver(el){
-    //console.log(el);
-    document.querySelector('#'+el.id+' > .actions').classList.add('actions-hover');
+    console.log(el.id,document.querySelector(`#${el.id}`));
+    //document.getElementById(el.id).classList.add('actions-hover');
+    //document.querySelector('#'+el.id + ' a').classList.replace('actions','actionsa');
 }
 function MouseOut(el){
-    document.querySelector('#'+el.id+' > .actions').classList.remove('actions-hover');
+    //document.getElementById(el.id).classList.remove('actions-hover');
+    //document.querySelector('#'+el.id + ' a').classList.replace('actionsa','actions');
 }
 
 function boardTask(id) {
