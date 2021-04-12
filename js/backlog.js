@@ -12,13 +12,16 @@ function renderTaskHtml(task) {
             </span>
             <span class="mdl-list__item-secondary-content">
                 <span class="mdc-list-item__meta nowrap">${task.category}</span>
-            </span>
-            <a class="actions" href="#">
+                <a class="actions" href="#">
+              
                     <i class="material-icons"  title="Edit" onclick="showForm('${task.id}')">edit
                     </i><i class="material-icons" onclick="boardTask('${task.id}')"
                     title="Publish to Board">publish</i><i class="material-icons"
                     onclick="deleteTask('${task.id}')" title="Delete">delete</i>
+               
             </a>
+            </span>
+            
         </li>
     `;
     return html;

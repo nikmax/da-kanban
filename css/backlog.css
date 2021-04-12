@@ -10,25 +10,33 @@
     border-radius: 15px;
     position: relative;
   }
+  /*
   .backlog:hover {
     opacity: 0.5;
+    
+    transition: opacity 0.7s;
+  }*/
+  .backlog:hover  .actions{
+    /*display: flex;
+    justify-content: center;
+    */
+    opacity: 1;
+    transition: opacity 0.7s;
     cursor: pointer;
-    transition: opacity 0.7s;
   }
-  .backlog:hover > a{
-    display: flex;
-    justify-content: space-around;
-    width: 100vw;
-    opacity: 1 !important;
-    transition: opacity 0.7s;
-  }
+
+
   .backlog-item {
     margin: 5px;
   }
 
   .actions {
-    display: none;
+    /*display: none;
     position: absolute;
+    width: 100vw;
+    opacity: 1 !important;
+    transition: opacity 0.7s;*/
+    opacity: 0;
   }
 
   .addtaskfab {
