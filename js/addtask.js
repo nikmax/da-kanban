@@ -1,6 +1,6 @@
 window.addEventListener('load',addTaskInit);
 
-let attrs = ['position','user','id','urgency','category','duedate','description','title'];
+let attrs = ['user','title','duedate','category','urgency','description','position'];
 
 let addTaskDiv = `
     <div class="modal-content mdl-card mdl-shadow--2dp">
@@ -10,6 +10,7 @@ let addTaskDiv = `
                 <div mdl-cell mdl-cell--12-col">
                   <input type="hidden" name="id" value="create">
                   <input type="hidden" name="user" value="">
+                  <input type="hidden" name="date" value="">
                 </div>
             </div>
             <div class="mdl-grid">
@@ -92,7 +93,6 @@ function addTaskInit(){
           querySnapshot.forEach(function(doc) {
             const catItem = doc.data().category;
             if(catItem != undefined && catItem.trim() != '')
-
                 if(catArray[catItem.trim()] == null ){
                     catArray[catItem.trim()] = 1;
                 }else{
@@ -117,29 +117,17 @@ function addTaskInit(){
       });
 }
 function showForm(id){
-    //e.preventDefault();
     let el = document.querySelector('form').elements;
     clearForm(el,false);
-    if(id == ''){
-        document.querySelector('#create').innerHTML = 'CREATE NEW TASK';
-        //document.querySelector('.sidebar').classList.remove('is-visible');
-        //document.querySelector('.mdl-layout__obfuscator').classList.remove('is-visible');
-    }else{
-        db.collection("tasks").doc(id)
-        .get().then(function(doc) {
-            if (doc.exists){
-              let item = doc.data();
-              for (let i = 0; i < attrs.length; i++){
-                let attr = attrs[i];
-                el[attr].value  = item[attr];
-              }
-              el['id'].value = id;
-              document.querySelector('#create').innerHTML = 'UPDATE MODIEFIED TASK';
-              //document.querySelector('#create').removeEventListener('click', createTask, false); 
-            } else {
-                showDanger("No such document with id: " + id);
-        }}).catch(function(error) {
-            showDanger("Error getting document:" + error);
+    document.querySelector('#create').innerHTML = 'CREATE NEW TASK';
+    if(id != ''){
+    	console.log(id);
+    	document.querySelector('#create').innerHTML = 'UPDATE MODIEFIED TASK';
+        db.collection("tasks").doc(id).get().then(function(doc){
+            if (doc.exists)	renderValues(el,doc);
+            else           	showDanger("No such document with id: " + id);
+        }).catch(function(error) {
+            	showDanger("Error getting document:" + error);
         });
     }
 }
@@ -152,14 +140,8 @@ function showAlert(msg) {
     notification.MaterialSnackbar.showSnackbar(data);
 }
 function showDanger(msg) {
-    
     notification.style.backgroundColor = 'red';
-    let data = {
-      message: msg,
-      timeout: 2000,
-      actionText: ''
-    };
-    notification.MaterialSnackbar.showSnackbar(data);
+    showAlert(msg);
     setTimeout(function(){ notification.style.backgroundColor = snackbarColor; }, 2000);
 }
 function clearForm(el,hide){
@@ -171,53 +153,46 @@ function clearForm(el,hide){
     if(hide) document.querySelector('#addtask').style.display = "none";
     else document.querySelector('#addtask').style.display ='block';
 }
-
-// create/modify Task
 function createTask (){
     let el = document.querySelector('form').elements;
-    if(firebase.auth().currentUser != null){
-        let name = firebase.auth().currentUser.displayName;
-        //
-    } else {let name = "nobody";}
-    id = el['id'].value;
-    if (id == ''){
-      try{
-        db.collection("tasks").add({
-            'title' : el['title'].value,
-            'duedate' : el['duedate'].value,
-            'category' : el['category'].value,
-            'urgency' : el['urgency'].value,
-            'position' :  el['position'].value,
-            'description' : el['description'].value,
-
-            'date' : firebase.firestore.Timestamp.now().toDate(),
-            'user' : name
-
-        }).then(function(){
+    let name = getUserName();
+    let id = el['id'].value;
+    if (id == ''){ // new task...
+        db.collection("tasks").add(renderAttributes(el,true)).then(function(){
             showAlert("Task created");
         }).catch(function(error) {
             showDanger("Error adding document: " + error);
             return false;
         });
-      }catch(error){
-            showDanger("Error modify document: " +error);console.log(error);
+    }else{ // modify task
+        db.collection("tasks").doc(id).set(renderAttributes(el)).then(function(){
+        	showAlert("Task modified");
+        }).catch(function(error){
+            showDanger("Error modify document: " +error);
             return false;
-      }
-    }else{
-        try{
-            db.collection("tasks").doc(id).set({
-                    'title' : el['title'].value,
-                    'duedate' : el['duedate'].value,
-                    'category' : el['category'].value,
-                    'urgency' : el['urgency'].value,
-                    'user' :  el['user'].value,
-                    'position' :  el['position'].value,
-                    'description' : el['description'].value
-            });
-        }catch(error){
-            showDanger("Error modify document: " +error);console.log(error);
-            return false;
-        }
+        });
     }
     clearForm(el,true);
+}
+function getUserName(){
+	if(firebase.auth().currentUser != null){
+        return firebase.auth().currentUser.displayName;
+    } else return "nobody";
+}
+function renderAttributes(el,newtask = false){
+    let obj = {};
+	for (let i = 0; i < attrs.length; i++){
+   		const attr = attrs[i];
+   		obj[attr] = el[attr].value;
+    }
+    if(newtask) obj['date'] = firebase.firestore.Timestamp.now().toDate();
+    return obj;       	
+}
+function renderValues(el,obj){
+	let item = doc.data();
+	for (let i = 0; i < attrs.length; i++){
+   		const attr = attrs[i];
+   		el[attr].value = item[attr];
+    }
+    el['id'].value = doc.id;
 }

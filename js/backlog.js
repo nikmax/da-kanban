@@ -1,4 +1,4 @@
-window.onresize = function(e){location.reload();};
+//window.onresize = function(e){location.reload();};
 
 function renderTaskHtml(task) {
     if (task.user == '') task.user = 'Noname';
