@@ -47,7 +47,7 @@ let addTaskDiv = `
               <div class="mdl-cell mdl-cell--6-col">
                   <label for="position">Position</label>
                   <select id="position" name="position">
-                  <option value="backlog">Backlog</option>
+                  <option value="backlog" selected="selected">Backlog</option>
                   <option value="todo">ToDo</option>
                   <option value="inprogress">InProgress</option>
                   <option value="testing">Testing</option>
@@ -85,25 +85,23 @@ function addTaskInit(){
     document.querySelector(".mdl-custom-close").onclick = function() {//        'use strict';   
         document.querySelector('#addtask').style.display = "none";
     }
-    db.collection("tasks")
-      .onSnapshot(function(querySnapshot) {
-          let categories = document.querySelector('#categories');
-          const catArray = [];
-          categories.innerHTML = '';
-          querySnapshot.forEach(function(doc) {
-            const catItem = doc.data().category;
-            if(catItem != undefined && catItem.trim() != '')
-                if(catArray[catItem.trim()] == null ){
-                    catArray[catItem.trim()] = 1;
-                }else{
-                    catArray[catItem.trim()]++;
-                }
-          });
-          for(let i in catArray){
-            categories.innerHTML += `<option value="${i}">`;
-          }
-          
-      });
+    db.collection("tasks").onSnapshot(function(querySnapshot) {
+        let categories = document.querySelector('#categories');
+        const catArray = [];
+        categories.innerHTML = '';
+        querySnapshot.forEach(function(doc) {
+          const catItem = doc.data().category;
+          if(catItem != undefined && catItem.trim() != '')
+              if(catArray[catItem.trim()] == null ){
+                  catArray[catItem.trim()] = 1;
+              }else{
+                  catArray[catItem.trim()]++;
+              }
+        });
+        for(let i in catArray){
+          categories.innerHTML += `<option value="${i}">`;
+        }
+    });
 
     
     firebase.auth().onAuthStateChanged(function(u) {
@@ -116,21 +114,22 @@ function addTaskInit(){
         }
       });
 }
+
 function showForm(id){
-    let el = document.querySelector('form').elements;
-    clearForm(el,false);
-    document.querySelector('#create').innerHTML = 'CREATE NEW TASK';
-    if(id != ''){
-    	console.log(id);
-    	document.querySelector('#create').innerHTML = 'UPDATE MODIEFIED TASK';
-        db.collection("tasks").doc(id).get().then(function(doc){
-            if (doc.exists)	renderValues(el,doc);
-            else           	showDanger("No such document with id: " + id);
-        }).catch(function(error) {
-            	showDanger("Error getting document:" + error);
-        });
-    }
+  let el = document.querySelector('form').elements;
+  clearForm(el,false);
+  document.querySelector('#create').innerHTML = 'CREATE NEW TASK';
+  if(id != ''){
+      document.querySelector('#create').innerHTML = 'UPDATE MODIEFIED TASK';
+      db.collection("tasks").doc(id).get().then(function(doc) {
+          if (doc.exists) renderValues(el,doc.data(),id);
+          else showDanger("No such document with id: " + id);
+      }).catch(function(error) {
+          showDanger("Error getting document:" + error);
+      });
+  }
 }
+
 function showAlert(msg) {
     let data = {
       message: msg,
@@ -188,11 +187,10 @@ function renderAttributes(el,newtask = false){
     if(newtask) obj['date'] = firebase.firestore.Timestamp.now().toDate();
     return obj;       	
 }
-function renderValues(el,obj){
-	let item = doc.data();
+function renderValues(el,item,id){
 	for (let i = 0; i < attrs.length; i++){
    		const attr = attrs[i];
    		el[attr].value = item[attr];
     }
-    el['id'].value = doc.id;
+    el['id'].value = id;
 }

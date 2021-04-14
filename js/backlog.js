@@ -37,7 +37,7 @@ function htmlToElement(html) {
 db.collection('tasks').where('position', '==', 'backlog')
     .onSnapshot(function (snapshot) {
         snapshot.docChanges().forEach(function (change) {
-            console.log(change.doc.data());
+            //console.log(change.doc.data());
             if (change.type === "added") {
                 let task = change.doc.data();
                 task.id = change.doc.id;
@@ -63,6 +63,7 @@ db.collection('tasks').where('position', '==', 'backlog')
 function clickAction(task){
     console.log(task);
 }
+/*
 function MouseOver(el){
     console.log(el.id,document.querySelector(`#${el.id}`));
     //document.getElementById(el.id).classList.add('actions-hover');
@@ -72,7 +73,7 @@ function MouseOut(el){
     //document.getElementById(el.id).classList.remove('actions-hover');
     //document.querySelector('#'+el.id + ' a').classList.replace('actionsa','actions');
 }
-
+*/
 function boardTask(id) {
     db.collection('tasks').doc(id).update({ position: 'todo' });
     showAlert('Task akctivated');
