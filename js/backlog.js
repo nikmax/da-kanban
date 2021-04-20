@@ -8,6 +8,11 @@ window.onresize = function(e){
     }
 };
 widthscreen = 0;
+/**
+ * Generates HTML string from db data
+ * dependet from screen resolution
+ * @param {object} task - Task data
+ */
 function renderTaskHtml(task) {
     let html = "";
     if (task.user == '') task.user = 'Noname';
@@ -76,7 +81,10 @@ function renderTaskHtml(task) {
     }
     return html;
 }
-
+/**
+ * Generates a DOM node from HTML string
+ * @param {object} html - The HTML string
+ */
 function htmlToElement(html) {
     let template = document.createElement('template');
     html = html.trim(); // Never return a text node of whitespace as the result
@@ -115,16 +123,13 @@ function changeHandler(change) {
         renderTask(task);
     }
     if (change.type === "modified") {
-        //let node = document.getElementById(task.id);
-        //let parent = node.parentNode;
-        //parent.replaceChild(htmlToElement(renderTaskHtml(task)), node);
         document.getElementById(task.id).remove();
         renderTask(task);
-       // showAlert('Task updated');
+        showAlert('Task updated');
     }
     if (change.type === "removed") {
         document.getElementById(change.doc.id).remove();
-        //showAlert('Task removed');
+        showAlert('Task removed');
     }
 }
 /**
@@ -139,11 +144,20 @@ function renderTask(task) {
     let col = document.getElementById("backlog");
     col.append(node);
 }
+/**
+ * publish a task on the board
+ * @function boardTask
+ * @param {number} id - The task id
+ */
 function boardTask(id) {
     db.collection('tasks').doc(id).update({ position: 'todo' });
-    showAlert('Task akctivated');
+    showAlert('Task activated');
 }
-// Delete Task
+/**
+ * delete a task
+ * @function deleteTask
+ * @param {number} id - The task id
+ */
 function deleteTask(id) {
     db.collection('tasks').doc(id).delete().then(function () {
         showAlert('Task deleted');

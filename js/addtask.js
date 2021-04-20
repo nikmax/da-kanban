@@ -114,22 +114,27 @@ function addTaskInit(){
         }
       });
 }
-
+/**
+ * show the task form for input or modify values
+ * @function showForm
+ * @param {number} id The id of the task or '' to fill empty values
+ */
 function showForm(id){
-  let el = document.querySelector('form').elements;
-  clearForm(el,false);
+  clearForm(false);
   document.querySelector('#create').innerHTML = 'CREATE NEW TASK';
   if(id != ''){
       document.querySelector('#create').innerHTML = 'UPDATE MODIEFIED TASK';
       db.collection("tasks").doc(id).get().then(function(doc) {
-          if (doc.exists) renderValues(el,doc.data(),id);
-          else showDanger("No such document with id: " + id);
+          if (doc.exists) {
+            let task = doc.data();
+            task.id = id;
+            fillForm(task);
+          }else showDanger("No such document with id: " + id);
       }).catch(function(error) {
           showDanger("Error getting document:" + error);
       });
   }
 }
-
 function showAlert(msg) {
     let data = {
       message: msg,
@@ -143,54 +148,80 @@ function showDanger(msg) {
     showAlert(msg);
     setTimeout(function(){ notification.style.backgroundColor = snackbarColor; }, 2000);
 }
-function clearForm(el,hide){
-    for (let i = 0; i < attrs.length; i++){
-      let attr = attrs[i];
-      el[attr].value  = "";
-    }
-    el['title'].focus();
-    if(hide) document.querySelector('#addtask').style.display = "none";
-    else document.querySelector('#addtask').style.display ='block';
-}
+/**
+ * create or modify the task in DB
+ * @function createTask
+ */
 function createTask (){
-    let el = document.querySelector('form').elements;
-    let name = getUserName();
-    let id = el['id'].value;
-    if (id == ''){ // new task...
-        db.collection("tasks").add(renderAttributes(el,true)).then(function(){
+    let task = getTaskValues();
+    if (task.id === undefined){ // new task...
+        db.collection("tasks").add(task).then(function(){
             showAlert("Task created");
         }).catch(function(error) {
             showDanger("Error adding document: " + error);
             return false;
         });
     }else{ // modify task
-        db.collection("tasks").doc(id).set(renderAttributes(el)).then(function(){
+        let id = task.id;
+        delete task.id;
+        db.collection("tasks").doc(id).set(task).then(function(){
         	showAlert("Task modified");
         }).catch(function(error){
             showDanger("Error modify document: " +error);
             return false;
         });
     }
-    clearForm(el,true);
+    clearForm(true);
 }
 function getUserName(){
 	if(firebase.auth().currentUser != null){
         return firebase.auth().currentUser.displayName;
     } else return "nobody";
 }
-function renderAttributes(el,newtask = false){
+/**
+ * get values from a form and return the new task object
+ * if a id input field is not set, fill the current date to a task attribute
+ * @function getTaskValues
+ */
+function getTaskValues(){
     let obj = {};
+    //let name = getUserName();
+    let el = document.querySelector('form').elements;
 	for (let i = 0; i < attrs.length; i++){
    		const attr = attrs[i];
    		obj[attr] = el[attr].value;
     }
-    if(newtask) obj['date'] = firebase.firestore.Timestamp.now().toDate();
+    if (el['id'].value != ''){
+      obj.id = el['id'].value;
+    }else obj['date'] = firebase.firestore.Timestamp.now().toDate();
     return obj;       	
 }
-function renderValues(el,item,id){
+/**
+ * fill form inputs with values of the task
+ * @function fillForm
+ * @param {object} item The task object
+ */
+function fillForm(item){
+  let el = document.querySelector('form').elements;
 	for (let i = 0; i < attrs.length; i++){
    		const attr = attrs[i];
    		el[attr].value = item[attr];
     }
-    el['id'].value = id;
+    el['id'].value = item.id;
+}
+/**
+ * fill form inputs with empty values
+ * @function clearForm
+ * @param {boolean} hide if true - the form div will be hidden
+ */
+function clearForm(hide){
+  let el = document.querySelector('form').elements;
+  for (let i = 0; i < attrs.length; i++){
+    let attr = attrs[i];
+    el[attr].value  = "";
+  }
+  
+  if(hide) document.querySelector('#addtask').style.display = "none";
+  else document.querySelector('#addtask').style.display ='block';
+  el['title'].focus();
 }
