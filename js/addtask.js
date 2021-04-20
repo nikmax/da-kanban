@@ -8,7 +8,7 @@ let addTaskDiv = `
       <form action="#"  st class="mdl-layout__content">
             <div class="mdl-grid">
                 <div mdl-cell mdl-cell--12-col">
-                  <input type="hidden" name="id" value="create">
+                  <input type="hidden" name="id" value="">
                   <input type="hidden" name="user" value="">
                   <input type="hidden" name="date" value="">
                 </div>
@@ -16,22 +16,22 @@ let addTaskDiv = `
             <div class="mdl-grid">
                 <div class="mdl-cell mdl-cell--6-col">
                   <label for="title">Title</label><br>
-                  <input type="text" placeholder="Title" id="title" name="title" required>
+                  <input type="text" placeholder="Title" id="title" name="title" required >
                 </div>
                 <div class="mdl-cell mdl-cell--6-col">
                   <label for="duedate">Duedate</label><br>
-                  <input type="date" id="duedate" name="duedate" placeholder="duedate"required >
+                  <input type="date" id="duedate" name="duedate" placeholder="duedate" required >
                 </div>
             </div>  
             <div class="mdl-grid">
                 <div class="mdl-cell mdl-cell--6-col">
                   <label for="category">Category</label><br>
-                  <input type="text" id="category" name="category" list="categories" placeholder="Category" required>
+                  <input type="text" id="category" name="category" list="categories" placeholder="Category" required >
                   <datalist id="categories"></datalist>
                 </div>
                 <div class="mdl-cell mdl-cell--6-col">
                   <label for="urgency">Urgency</label><br>
-                  <select id="urgency" name="urgency" required>
+                  <select id="urgency" name="urgency" required >
                       <option value="Low">Low</option>
                       <option value="Middle">Middle</option>
                       <option value="High" selected>High</option>
@@ -42,7 +42,7 @@ let addTaskDiv = `
             <div class="mdl-grid">
               <div class="mdl-cell mdl-cell--6-col">
                   <label for="description">Description</label><br>
-                  <textarea type="text" rows="3" id="description" name="description"></textarea>
+                  <textarea type="text" rows="3" id="description" name="description" requrired ></textarea>
               </div>
               <div class="mdl-cell mdl-cell--6-col">
                   <label for="position">Position</label>

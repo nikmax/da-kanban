@@ -51,14 +51,20 @@
   .itemsul {
     display: flex;
     align-content: space-between;
-    width: 100vw;
+    /*width: 100vw;*/
     align-items: center;
     flex-direction: column;
+  }
+  .itemscat {
+    width: 22vw;
+  }
+  .itemsli {
+    width: 65vw;
   }
   .itemdesc {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    width: 70vw;
+    width: 60vw;
     padding-left: 60px !important;
   }
