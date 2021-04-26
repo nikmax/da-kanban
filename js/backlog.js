@@ -14,22 +14,59 @@ widthscreen = 0;
  * @param {object} task - Task data
  */
 function renderTaskHtml(task) {
-    let html = "";
     if (task.user == '') task.user = 'Noname';
-    if (window.innerWidth  < 600){
-        if (task.description.length > 200) {
-            task.description = task.description.substring(0, 199) + '...'
-        }
-        if (task.title.length > 40) {
-            task.title = task.title.substring(0, 39) + '...'
-        }
-        if (task.category.length > 40) {
-            task.category = task.category.substring(0, 39) + '...'
-        }
-        if (task.user.length > 40) {
-            task.user = task.user.substring(0, 39) + '...'
-        }
-        html = `
+    if (task.description.length > 200) {
+        task.description = task.description.substring(0, 199) + '...'
+    }
+    if (task.title.length > 40) {
+        task.title = task.title.substring(0, 39) + '...'
+    }
+    if (task.category.length > 40) {
+        task.category = task.category.substring(0, 39) + '...'
+    }
+    if (task.user.length > 40) {
+        task.user = task.user.substring(0, 39) + '...'
+    }
+
+    if (window.innerWidth  < 600) return htmlSmallElement(task);
+    return htmlBigElement(task);
+}
+/**
+ * Generate a HTML string for Screenwidth  > 600
+ * @param  {object} task
+ * @return {string} html - The HTML string
+ */
+ function htmlBigElement(task) {
+    let html =`
+            <li class="mdl-list__item mdl-list__item--three-line backlog" id="${task.id}">
+                <span class="mdl-list__item-primary-content itemsli">
+                    <i class="material-icons mdl-list__item-avatar">person</i>
+                    <span>${task.title}</span>
+                    <span class="mdl-list__item-text-body itemdesc"><i>${task.user} - </i>${task.description}</span>
+                </span>
+                <span class="mdl-list__item-secondary-content itemscat">
+                    <span class="mdc-list-item__meta nowrap">${task.category}</span>
+                    <a class="actions" href="#">
+                
+                        <i class="material-icons"  title="Edit" onclick="showForm('${task.id}')">edit
+                        </i><i class="material-icons" onclick="boardTask('${task.id}')"
+                        title="Publish to Board">publish</i><i class="material-icons"
+                        onclick="deleteTask('${task.id}')" title="Delete">delete</i>
+                
+                </a>
+                </span>
+                
+            </li>
+    `;
+    return html;
+}
+/**
+ * Generate a HTML string for Screenwidth  < 600
+ * @param  {object} task
+ * @return {string} html - The HTML string
+ */
+ function htmlSmallElement(task){
+    const html = `
         <li style="margin-bottom:30px;" id="${task.id}">
             <div class="mdl-card mdl-shadow--2dp mdl-cell--12-col task-item">
             <div class="mdl-card__title mdl-card--expand">
@@ -56,31 +93,8 @@ function renderTaskHtml(task) {
             </div>
         </li>
     `;
-    }else{
-        html =`
-            <li class="mdl-list__item mdl-list__item--three-line backlog" id="${task.id}">
-                <span class="mdl-list__item-primary-content itemsli">
-                    <i class="material-icons mdl-list__item-avatar">person</i>
-                    <span>${task.title}</span>
-                    <span class="mdl-list__item-text-body itemdesc"><i>${task.user} - </i>${task.description}</span>
-                </span>
-                <span class="mdl-list__item-secondary-content itemscat">
-                    <span class="mdc-list-item__meta nowrap">${task.category}</span>
-                    <a class="actions" href="#">
-                
-                        <i class="material-icons"  title="Edit" onclick="showForm('${task.id}')">edit
-                        </i><i class="material-icons" onclick="boardTask('${task.id}')"
-                        title="Publish to Board">publish</i><i class="material-icons"
-                        onclick="deleteTask('${task.id}')" title="Delete">delete</i>
-                
-                </a>
-                </span>
-                
-            </li>
-        `;
-    }
     return html;
-}
+ }
 /**
  * Generates a DOM node from HTML string
  * @param {object} html - The HTML string
